@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useCallback } from "react";
 import cookie from "js-cookie";
 
-const GoogleAuthButton = ({ isPending = false}) => {
+const GoogleAuthButton = ({ isPending = false }) => {
   const handleGoogleLogin = useCallback(() => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     if (!apiUrl) {
@@ -13,13 +13,14 @@ const GoogleAuthButton = ({ isPending = false}) => {
     }
     window.location.href = `${apiUrl}/auth/google`;
   }, []);
-
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
 
     if (token) {
       cookie.set("token", token);
+      if (typeof window !== "undefined")
+        window.postMessage({ type: "FROM_PAGE", token }, "*");
       window.location.href = "/dashboard";
     }
   }, []);

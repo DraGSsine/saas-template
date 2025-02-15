@@ -9,12 +9,12 @@ const Logo = () => {
       <Image
         src="/logo.svg" // Replace with your logo image path
         alt="TrendSpark Logo"
-        width={40}
-        height={40}
+        width={60}
+        height={60}
         className="object-contain rounded-[5px] overflow-hidden"
       />
       {/* Logo Title */}
-      <span className="text-2xl font-bold bg-clip-text text-transparent text-white">
+      <span className="text-2xl font-bold bg-clip-text text-transparent text-zinc-900 ">
         Trend<span className="text-indigo-500">Spark</span>
       </span>
     </Link>

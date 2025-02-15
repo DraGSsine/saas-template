@@ -1,133 +1,143 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, plugin } from 'mongoose';
 import { User } from 'src/model/UserSchema';
 import OpenAI from 'openai';
 
 @Injectable()
 export class AiService {
   private openai: any;
-  private trendCache: { trends: any; timestamp: number } | null = null;
-  private readonly CACHE_DURATION = 1 * 60 * 60 * 1000; // 1 hour cache
 
   constructor(
     private configService: ConfigService,
     @InjectModel(User.name) private userModel: Model<User>,
   ) {
+    // this.openai = new OpenAI({
+    //   apiKey: this.configService.get<string>('OPENAI_API_KEY'),
+    // });
     this.openai = new OpenAI({
-      apiKey: this.configService.get<string>('OPENAI_API_KEY'),
+      baseURL: 'https://openrouter.ai/api/v1',
+      apiKey: this.configService.get<string>('OPENROUTER_API_KEY'),
     });
   }
 
-  private async getTrends(timeRange: number, niche: string) {
-    const currentTime = Date.now();
-
-    if (
-      this.trendCache &&
-      currentTime - this.trendCache.timestamp < this.CACHE_DURATION
-    ) {
-      return this.trendCache.trends;
-    }
-
-    try {
-      const serperApiKey = this.configService.get<string>('SERP_API_KEY');
-      const url = `https://serpapi.com/search.json?engine=google_trends_trending_now&geo=US&hours=${timeRange}&hl=en&api_key=${serperApiKey}`;
-
-      const response = await fetch(url);
-      const data = await response.json();
-      const trends = data.trending_searches.map((trend: any) => ({
-        topic: trend.query,
-        relatedQueries: trend.trend_breakdown?.slice(0, 3) || [],
-        category:
-          trend?.categories?.map((c: any) => c.name.toLowerCase()) || [],
-      }));
-
-      this.trendCache = {
-        trends,
-        timestamp: currentTime,
-      };
-      // Filter trends based on the niche and return top 5
-      if (niche.toLocaleLowerCase() === 'all') return trends.slice(0, 5);
-      const filteredTrends = trends.filter((trend: any) =>
-        trend.category.includes(niche.toLocaleLowerCase()),
-      );
-      if (filteredTrends.length === 0)
-        throw new Error('No trends found for the specified niche');
-      return filteredTrends.slice(0, 5);
-    } catch (error) {
-      console.error('Error fetching trends:', error);
-      throw new Error('Failed to fetch trending topics');
-    }
-  }
-
-  async generateContentIdeas(
-    platform: string,
-    niche: string,
-    timeRange: number,
+  async generate(
+    lastReceivedMessage: string,
+    message: string,
+    allMessages: string[],
+    allMyMessages: string[],
+    userName: string,
     userId: string,
   ) {
     try {
-      const trends = await this.getTrends(timeRange, niche);
+      // Choose the appropriate prompt based on whether a draft message exists.
+      console.log('lastReceivedMessage:', lastReceivedMessage);
+      console.log('message:', message);
+      console.log('allMessages:', allMessages);
+      console.log('allMyMessages:', allMyMessages);
+      console.log('userName:', userName);
+      let promptText = '';
 
-      const prompt = `As a content strategist for ${platform}, analyze these current trends and develop three content ideas for an influencer in the ${niche} niche:
+      if (message && message.trim().length > 0) {
+        // Prompt for refining an existing draft message
+        promptText = `
+      You are assisting in writing messages as if you are the person replying to received messages.
+      
+      CONTEXT:
+      - Recipient (${userName}) sent the last message: "${lastReceivedMessage}"
+      - Your previous replies: ${allMyMessages.join(' ')}
+      - Their previous messages: ${allMessages.join(' ')}
+      
+      OBJECTIVE:
+      - Improve and refine the following draft message: "${message}"
+      - Enhance clarity, tone, and natural flow while preserving the original context
+      
+      GUIDELINES:
+      - Use a natural, human-like tone appropriate for the conversation.
+      - Write consistently from the perspective of the person replying.
+      - Avoid unnecessary repetition of the recipient’s name.
+      - Do not invent new details or deviate from the conversation's context.
+      - Do not include placeholder text such as [name], [place], [date], etc.
+      
+      Please generate only the improved version of the draft message.
+        `;
+      } else if (allMessages.length !== 0 || allMyMessages.length !== 0) {
+        // Prompt for generating a new reply message
+        promptText = `
+      You are assisting in writing messages as if you are the person replying to received messages.
+      
+      CONTEXT:
+      - Recipient (${userName}) sent the last message: "${lastReceivedMessage}"
+      - Your previous replies: ${allMyMessages.join(' ')}
+      - Their previous messages: ${allMessages.join(' ')}
+      
+      OBJECTIVE:
+      - Generate a new reply that is contextually appropriate to the recipient’s last message.
+      - Ensure the response is natural, human-like, and true to the conversation.
+      
+      GUIDELINES:
+      - Write from the perspective of the person replying.
+      - Keep the reply relevant to the recipient’s last message without repeating it verbatim.
+      - Use a tone that fits the conversation’s formality (casual or formal).
+      - Do not introduce new topics or details not present in the conversation.
+      - Do not include placeholder text such as [name], [place], [date], etc.
+      
+      Please generate only the new response message.
+        `;
+      } else {
+        console.log('new conversation');
 
-Current Trends:
-${JSON.stringify(trends, null, 2)}
+        // Prompt for starting a new conversation
+        promptText = `
+        You are assisting in writing a greeting message.
+        
+        OBJECTIVE:
+        - Start a new conversation by writing a brief and engaging greeting.
+        - Simply greet the recipient (${userName}) to initiate the conversation.
+        
+        GUIDELINES:
+        - Use the recipient's name (${userName}) in the greeting.
+        - Keep the greeting friendly, concise, and contextually appropriate.
+        - Avoid unnecessary details or unrelated topics.
+        - Do not include placeholder text such as [name], [place], [date], etc.
+        
+        Please generate only the greeting message.
+        `;
+      }
 
-Create three content pieces that:
-1. Connect one specific trend to the ${niche} niche
-2. Are optimized for ${platform}'s best practices
-3. Have viral potential with engaging hooks
-4. Target the ${niche} audience
-
-Respond ONLY with a valid JSON array containing exactly three content ideas in this format:
-[
-  {
-    "contentType": "post/video/reel/story",
-    "title": "Catchy title connecting the trend to ${niche}",
-    "hook": "Attention-grabbing opening that mentions the trend",
-    "description": "Detailed content description showing how the trend relates to ${niche}",
-    "trendConnection": "Explicit explanation of how this content connects to [specific trend]",
-    "hashtags": ["Trend-related tag", "Niche-related tag", "Platform-specific tag"],
-    "estimatedEngagement": "HIGH/MEDIUM/LOW"
-  }
-]`;
-
-      // Call the OpenAI Chat Completion endpoint
+      // Call OpenAI's chat completion with the chosen prompt.
       const completion = await this.openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [
           {
             role: 'system',
-            content:
-              'You are a content strategist for a social media platform.',
+            content: `
+  You are an expert in writing natural, human-like responses.
+  Your goal is to ensure the response:
+  - Feels like a real person wrote it
+  - Is not robotic or overly AI-like
+  - Adapts to the user's tone (formal or casual)
+            `,
           },
-          { role: 'user', content: prompt },
+          {
+            role: 'user',
+            content: promptText,
+          },
         ],
-        temperature: 0.7,
+        temperature: 0.4, // Lower temperature for more human-like responses
       });
 
-      // Extract the text response from the OpenAI API response
-      const content = completion.choices[0].message?.content;
-      if (!content) {
-        throw new Error('No content received from OpenAI');
-      }
+      let content = completion.choices[0].message?.content?.trim();
+      if (!content) throw new Error('No content received from OpenAI');
 
-      // Clean and parse the JSON response (strip markdown formatting if present)
-      const cleanJson = content
-        .replace(/```json\n?/g, '')
-        .replace(/```\n?/g, '')
-        .trim();
-      console.log('cleanJson', cleanJson);
-      const parsedContent = JSON.parse(cleanJson);
+      // Update user creditsUsed.
+      await this.userModel.updateOne({ _id: userId }, { $inc: { creditsUsed: 1 } });
 
-      // Update user credits
-      await this.userModel.updateOne({ _id: userId }, { $inc: { credits: 1 } });
-      return parsedContent;
+      return { message: content };
     } catch (error) {
       console.error('Content Generation Error:', error);
-      throw new Error('Failed to generate content ideas');
+      throw new Error('Failed to generate response');
     }
   }
 }

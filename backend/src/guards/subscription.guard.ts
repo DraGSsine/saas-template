@@ -5,11 +5,6 @@ import { Model } from 'mongoose';
 import { User } from 'src/model/UserSchema';
 @Injectable()
 export class SubscriptionGuard implements CanActivate {
-  private readonly PlansLimits = {
-    free: 10,
-    starter: 40,
-    premium: 'unlimited',
-  };
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -20,17 +15,20 @@ export class SubscriptionGuard implements CanActivate {
     const user = await this.userModel.findById(userId);
     if (!user) throw new UnauthorizedException('User not found');
     const userPlan = user.plan;
-    const userUsage = user.credits;
+    const userUsage = user.creditsUsed;
+    const userMonthlyCredits = user.monthlyCredits;
     if (!userPlan)
-      throw new UnauthorizedException('Please subscribe to a plan');
-    if (userPlan === 'free' && userUsage >= this.PlansLimits.free) {
+      throw new UnauthorizedException("You don't have a subscription plan please visit https://messagemate.pro");
+    if (userPlan === 'none')
+      throw new UnauthorizedException('You do not have a subscription plan please visit https://messagemate.pro');
+    if (userPlan === 'free' && userUsage >= userMonthlyCredits) {
       await this.userModel.findByIdAndUpdate(userId, { plan: 'none' });
-      throw new UnauthorizedException('Free plan limit reached');
+      throw new UnauthorizedException('Free plan limit reached please visit https://messagemate.pro');
     }
 
-    if (userPlan === 'starter' && userUsage >= this.PlansLimits.starter) {
+    if (userPlan === 'starter' && userUsage >= userMonthlyCredits) {
       await this.userModel.findByIdAndUpdate(userId, { plan: 'none' });
-      throw new UnauthorizedException('Starter plan limit reached');
+      throw new UnauthorizedException('Starter plan limit reached please visit https://messagemate.pro');
     }
 
     return true;

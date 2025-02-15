@@ -103,6 +103,7 @@ export default function Page() {
     },
   });
 
+
   return (
     <main className="h-screen w-full relative bg-gradient-to-b from-zinc-900 to-zinc-950">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:32px_32px] opacity-40" />

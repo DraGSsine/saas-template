@@ -21,7 +21,7 @@ const routes = [
     label: "Dashboard",
     icon: Layout,
     href: "/dashboard",
-  }
+  },
 ];
 
 export function Sidebar() {
@@ -63,10 +63,12 @@ function SidebarContent() {
   const pathname = usePathname();
   const handleLogout = () => {
     cookies.remove("token");
+    if (typeof window !== "undefined")
+      window.postMessage({ type: "FROM_PAGE", token: null }, "*");
     window.location.href = "/";
   };
   const { data } = useUserInfo();
-  const limitPercentage = (data?.credits / data?.planLimit) * 100;
+  const limitPercentage = (data?.creditsUsed / data?.monthlyCredits) * 100;
   return (
     <div className="flex h-full">
       <div className="relative flex w-full flex-col h-full bg-zinc-900 border-r border-zinc-800">
@@ -115,17 +117,15 @@ function SidebarContent() {
                 </span>
                 <div className="flex items-center gap-2">
                   <span className="text-base font-semibold text-white">
-                    {data?.credits}
+                    {data?.creditsUsed}
                   </span>
                   <span className="text-neutral-400">/</span>
                   <span className="text-sm font-medium text-neutral-400">
-                    {data?.planLimit}
+                    {data?.monthlyCredits}
                   </span>
                 </div>
               </div>
-              <Progress
-                value={limitPercentage}
-              />
+              <Progress value={limitPercentage} />
             </div>
           </div>
 

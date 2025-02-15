@@ -68,7 +68,7 @@ export class PaymentsService {
       if (!userId) {
         return res.status(400).send('User ID not found');
       }
-      await this.userModel.findByIdAndUpdate(userId, { plan: plan, credits: 0 });
+      await this.userModel.findByIdAndUpdate(userId, { plan: plan, creditsUsed: 0 });
     }
   }
 }

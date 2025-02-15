@@ -4,7 +4,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../model/UserSchema';
 import * as crypto from 'crypto';
-import { plansLimits } from 'src/lib/constans';
 interface GoogleProfile {
   emails?: Array<{ value: string }>;
   id: string;
@@ -63,8 +62,8 @@ export class UsersService {
       displayName: userExist.displayName,
       avatar: userExist.avatar,
       plan: userExist.plan,
-      planLimit: plansLimits[userExist.plan],
-      credits: userExist.credits,
+      monthlyCredits: userExist.monthlyCredits,
+      creditsUsed: userExist.creditsUsed,
     };
   }
 }

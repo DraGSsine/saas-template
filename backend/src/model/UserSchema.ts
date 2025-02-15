@@ -22,7 +22,10 @@ export class User extends Document {
   plan: string;
 
   @Prop({ default: 0 })
-  credits: number;
+  creditsUsed: number;
+
+  @Prop({ default: 10 })
+  monthlyCredits: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

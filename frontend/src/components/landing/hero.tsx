@@ -1,140 +1,139 @@
-"use client";
-
-import { ArrowRight, Play } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import React from "react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import Trusted from "./trusted";
-
-const socialPlatforms = [
-  {
-    icon: "/icons/youtube.svg",
-    color: "bg-zinc-900",
-    position: "top-[15%] left-[14%]",
-    delay: "delay-100",
-  },
-  {
-    icon: "/icons/instagram.svg",
-    color: "bg-zinc-900",
-    position: "top-[35%] left-[11%]",
-    delay: "delay-300",
-  },
-  {
-    icon: "/icons/facebook.svg",
-    color: "bg-zinc-900",
-    position: "top-[50%] left-[16%]",
-    delay: "delay-200",
-  },
-  {
-    icon: "/icons/twitter.svg",
-    color: "bg-zinc-900",
-    position: "top-[45%] right-[15%]",
-    delay: "delay-400",
-  },
-  {
-    icon: "/icons/tiktok.svg",
-    color: "bg-zinc-900",
-    position: "top-[35%] right-[11%]",
-    delay: "delay-500",
-  },
-  {
-    icon: "/icons/linkedin.svg",
-    color: "bg-zinc-900",
-    position: "top-[15%] right-[13%]",
-    delay: "delay-600",
-  },
-];
-
-export default function Hero() {
+function Hero() {
   return (
-    <div className="relative pt-32 pb-20 sm:pt-40 sm:pb-24 bg-zinc-950">
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:32px_32px]" />
-
-      {/* Floating Social Media Icons */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {socialPlatforms.map((platform, index) => (
-          <div
-            key={index}
-            className={cn(
-              "absolute w-14 h-14 rounded-xl p-3",
-              platform.color,
-              platform.position,
-              "animate-float",
-              platform.delay,
-              "border border-white/5",
-              "shadow-lg shadow-black/10"
-            )}
-          >
-            <Image
-              src={platform.icon}
-              alt="social media icon"
-              width={40}
-              height={40}
-            />
-          </div>
-        ))}
-      </div>
-
-      <div className="container mx-auto px-6 relative">
-        <div className="text-center max-w-4xl mx-auto">
-          <Trusted />
-
-          {/* Headline */}
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-8 text-white">
-            Ride the Wave with{" "}
-            <span className="text-indigo-500">AI</span> & <span className=" text-indigo-500" >Google Trends</span>
-            <span className="block mt-2">Inspired Content</span>
-          </h1>
-
-          {/* Subheading */}
-          <p className="text-lg sm:text-xl text-zinc-400 my-12 max-w-2xl mx-auto leading-relaxed">
-            Harness the power of AI to craft captivating content, decode
-            emerging trends, and amplify your social media presence.
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-            <Link href="/auth/signup" className="w-full sm:w-auto">
-              <Button 
-                className="w-full h-12 bg-indigo-500 text-white hover:bg-indigo-500 rounded-lg"
+    <div className="flex pt-40 max-w-6xl mx-auto">
+      <div className=" w-[65%] ">
+        <h1 className=" text-6xl font-extrabold text-slate-800 leading-[4.5rem] ">
+          Find phone numbers <br />
+          <span className=" bg-main-gradient from-pink-500 to-primary bg-clip-text text-transparent ">
+            on LinkedIn & <br />
+            Sales Navigator
+          </span>
+        </h1>
+        <p className=" py-5 text-slate-800">
+          The most powerful LinkedIn & Sales Navigator phone number finder tool.{" "}
+          <br /> Find phone numbers, emails, and social media profiles.
+        </p>
+        <div className="flex items-center gap-4 py-6">
+          <Button
+            variant="outline"
+            size="lg"
+            className="flex items-center font-bold gap-2 rounded-full border-primary text-primary hover:bg-primary/10 hover:text-primary "
+            >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              x="0px"
+              y="0px"
+              width="28"
+              height="28"
+              viewBox="0 0 48 48"
+            >
+              <path
+                fill="#fff"
+                d="M34,24c0,5.521-4.479,10-10,10s-10-4.479-10-10s4.479-10,10-10S34,18.479,34,24z"
+              ></path>
+              <linearGradient
+                id="Pax8JcnMzivu8f~SZ~k1ya_ejub91zEY6Sl_gr1"
+                x1="5.789"
+                x2="31.324"
+                y1="34.356"
+                y2="20.779"
+                gradientTransform="matrix(1 0 0 -1 0 50)"
+                gradientUnits="userSpaceOnUse"
               >
-                <span className="flex items-center justify-center gap-2 text-base font-semibold">
-                  Start Creating
-                  <Play className="w-4 h-4" />
-                </span>
-              </Button>
-            </Link>
-
-            <Link href="#pricing" className="w-full sm:w-auto">
-              <Button 
-                variant="outline"
-                className="w-full h-12 border border-zinc-800 hover:bg-zinc-800 text-white rounded-lg"
+                <stop offset="0" stop-color="#4caf50"></stop>
+                <stop offset=".489" stop-color="#4aaf50"></stop>
+                <stop offset=".665" stop-color="#43ad50"></stop>
+                <stop offset=".79" stop-color="#38aa50"></stop>
+                <stop offset=".892" stop-color="#27a550"></stop>
+                <stop offset=".978" stop-color="#11a050"></stop>
+                <stop offset="1" stop-color="#0a9e50"></stop>
+              </linearGradient>
+              <path
+                fill="url(#Pax8JcnMzivu8f~SZ~k1ya_ejub91zEY6Sl_gr1)"
+                d="M31.33,29.21l-8.16,14.77C12.51,43.55,4,34.76,4,24C4,12.96,12.96,4,24,4v11 c-4.97,0-9,4.03-9,9s4.03,9,9,9C27.03,33,29.7,31.51,31.33,29.21z"
+              ></path>
+              <linearGradient
+                id="Pax8JcnMzivu8f~SZ~k1yb_ejub91zEY6Sl_gr2"
+                x1="33.58"
+                x2="33.58"
+                y1="6"
+                y2="34.797"
+                gradientTransform="matrix(1 0 0 -1 0 50)"
+                gradientUnits="userSpaceOnUse"
               >
-                <span className="flex items-center justify-center gap-2 text-base font-semibold">
-                  Free Trial
-                  <ArrowRight className="w-4 h-4" />
-                </span>
-              </Button>
-            </Link>
-          </div>
+                <stop offset="0" stop-color="#ffd747"></stop>
+                <stop offset=".482" stop-color="#ffd645"></stop>
+                <stop offset=".655" stop-color="#fed43e"></stop>
+                <stop offset=".779" stop-color="#fccf33"></stop>
+                <stop offset=".879" stop-color="#fac922"></stop>
+                <stop offset=".964" stop-color="#f7c10c"></stop>
+                <stop offset="1" stop-color="#f5bc00"></stop>
+              </linearGradient>
+              <path
+                fill="url(#Pax8JcnMzivu8f~SZ~k1yb_ejub91zEY6Sl_gr2)"
+                d="M44,24c0,11.05-8.95,20-20,20h-0.84l8.17-14.79C32.38,27.74,33,25.94,33,24 c0-4.97-4.03-9-9-9V4c7.81,0,14.55,4.48,17.85,11C43.21,17.71,44,20.76,44,24z"
+              ></path>
+              <linearGradient
+                id="Pax8JcnMzivu8f~SZ~k1yc_ejub91zEY6Sl_gr3"
+                x1="36.128"
+                x2="11.574"
+                y1="44.297"
+                y2="28.954"
+                gradientTransform="matrix(1 0 0 -1 0 50)"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop offset="0" stop-color="#f7572f"></stop>
+                <stop offset=".523" stop-color="#f7552d"></stop>
+                <stop offset=".712" stop-color="#f75026"></stop>
+                <stop offset=".846" stop-color="#f7461b"></stop>
+                <stop offset=".954" stop-color="#f7390a"></stop>
+                <stop offset="1" stop-color="#f73100"></stop>
+              </linearGradient>
+              <path
+                fill="url(#Pax8JcnMzivu8f~SZ~k1yc_ejub91zEY6Sl_gr3)"
+                d="M41.84,15H24c-4.97,0-9,4.03-9,9c0,1.49,0.36,2.89,1.01,4.13H16L7.16,13.26H7.14 C10.68,7.69,16.91,4,24,4C31.8,4,38.55,8.48,41.84,15z"
+              ></path>
+              <linearGradient
+                id="Pax8JcnMzivu8f~SZ~k1yd_ejub91zEY6Sl_gr4"
+                x1="19.05"
+                x2="28.95"
+                y1="30.95"
+                y2="21.05"
+                gradientTransform="matrix(1 0 0 -1 0 50)"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop offset="0" stop-color="#2aa4f4"></stop>
+                <stop offset="1" stop-color="#007ad9"></stop>
+              </linearGradient>
+              <path
+                fill="url(#Pax8JcnMzivu8f~SZ~k1yd_ejub91zEY6Sl_gr4)"
+                d="M31,24c0,3.867-3.133,7-7,7s-7-3.133-7-7s3.133-7,7-7S31,20.133,31,24z"
+              ></path>
+            </svg>
+            Add to Chrome
+          </Button>
 
-          {/* Dashboard Preview */}
-          <div className="relative mx-auto max-w-[90vw] lg:max-w-[95vw]">
-            <div className="relative bg-zinc-900 rounded-xl border border-zinc-800 p-2 sm:p-4 shadow-2xl">
-              <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/50 to-transparent rounded-xl" />
-              <Image
-                width={1920}
-                height={1080}
-                src="/bg.png"
-                alt="Analytics Dashboard"
-                className="w-full rounded-lg shadow-2xl"
-                priority
-              />
-            </div>
-          </div>
+          <Button
+            size="lg"
+            className="rounded-full font-bold bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+            Start Free Trial
+          </Button>
         </div>
+      </div>
+      <div className=" w-[50%] flex items-end">
+        <Image
+          src="/hero.webp"
+          width={1000}
+          height={1000}
+          alt="Hero Section Main Image"
+        />
       </div>
     </div>
   );
 }
+
+export default Hero;
